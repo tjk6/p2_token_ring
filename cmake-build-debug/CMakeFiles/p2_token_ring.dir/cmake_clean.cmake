@@ -1,5 +1,5 @@
 file(REMOVE_RECURSE
-  "CMakeFiles/p2_token_ring.dir/main.c.o"
+  "CMakeFiles/p2_token_ring.dir/server.c.o"
   "p2_token_ring.pdb"
   "p2_token_ring.exe"
   "libp2_token_ring.dll.a"

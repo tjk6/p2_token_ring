@@ -4,7 +4,7 @@ set(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_C
-  "/cygdrive/d/UWF Spring 2018/SysNetII/p2_token_ring/p2_token_ring/server.c" "/cygdrive/d/UWF Spring 2018/SysNetII/p2_token_ring/p2_token_ring/cmake-build-debug/CMakeFiles/p2_token_ring.dir/server.c.o"
+  "/cygdrive/d/UWF Spring 2018/SysNetII/p2_token_ring/p2_token_ring/ring_client.c" "/cygdrive/d/UWF Spring 2018/SysNetII/p2_token_ring/p2_token_ring/cmake-build-debug/CMakeFiles/bbhost.dir/ring_client.c.o"
   )
 set(CMAKE_C_COMPILER_ID "GNU")
 
