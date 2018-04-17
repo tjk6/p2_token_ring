@@ -35,48 +35,58 @@ int main(int argc, char* argv[]){
     char buffer[BUFFER_SIZE];                   //Buffer for reading
     struct addrinfo hints, *server_info, *tempinfo;    //Stores info about the address
     int num_bytes;                              //Number of bytes in a packet message
+    struct sockaddr_in server_sockaddr;
     socklen_t sender_len;                       //Length to be obtained
     char host_address[INET6_ADDRSTRLEN];
 
     //Initialize the addrinfo struct
-    memset(&hints,0,sizeof(hints));
-    hints.ai_family = AF_INET;                  //IPv4
-    hints.ai_socktype = SOCK_DGRAM;             //This is UDP. Sending Datagrams.
-    hints.ai_protocol = 0;
-    hints.ai_flags = AI_PASSIVE;                //Use host IP
-    if(getaddrinfo(NULL, argv[1], &hints, &server_info) != 0){
-        printf("Could not get address info of this server: \n\t%s\n", strerror(errno));
-        return(1);
+    server_sockaddr.sin_family = AF_INET;
+    server_sockaddr.sin_port = htons((uint16_t)portNum);
+    server_sockaddr.sin_addr.s_addr = htonl(INADDR_ANY);
+    if((server_socket = socket(PF_INET, SOCK_DGRAM,0)) == -1){
+        printf("Could not establish socket.\n");
+        return -1;
     }
 
-    for(tempinfo = server_info; tempinfo != NULL; tempinfo = tempinfo->ai_next){
-        server_socket = socket(tempinfo->ai_family,tempinfo->ai_socktype,tempinfo->ai_protocol);
-        if(server_socket < 0){
-            printf("Could not open socket on this addrinfo\n");
-            continue;
-        }
-        if(bind(server_socket, tempinfo->ai_addr,tempinfo->ai_addrlen) < 0){
-            close(server_socket);
-            printf("Error in binding\n");
-            continue;
-        }
-        break;
-    }
-    char server_name[BUFFER_SIZE];
-    gethostname(server_name,BUFFER_SIZE-1);
-    printf("Server Address: <%s:",server_name);
-    printf("%d>\n", ntohs(((struct sockaddr_in*)server_info)->sin_port));
-    freeaddrinfo(server_info);
-    if(tempinfo == NULL){
-        printf("Could not bind...\n");
-        return 1;
-    }
 
-    //Server socket initialization
-    server_socket = socket(AF_INET, SOCK_DGRAM, 0);
-    if(server_socket < 0){
-        printf("Error opening socket");
-    }
+
+//    //Initialize the addrinfo struct
+//    memset(&hints,0,sizeof(hints));
+//    hints.ai_family = AF_INET;                  //IPv4
+//    hints.ai_socktype = SOCK_DGRAM;             //This is UDP. Sending Datagrams.
+//    hints.ai_protocol = 0;
+//    hints.ai_flags = AI_PASSIVE;                //Use host IP
+//    if(getaddrinfo(NULL, argv[1], &hints, &server_info) != 0){
+//        printf("Could not get address info of this server: \n\t%s\n", strerror(errno));
+//        return(1);
+//    }
+//
+//    for(tempinfo = server_info; tempinfo != NULL; tempinfo = tempinfo->ai_next){
+//        server_socket = socket(tempinfo->ai_family,tempinfo->ai_socktype,tempinfo->ai_protocol);
+//        if(server_socket < 0){
+//            printf("Could not open socket on this addrinfo\n");
+//            continue;
+//        }
+//        if(bind(server_socket, tempinfo->ai_addr,tempinfo->ai_addrlen) < 0){
+//            close(server_socket);
+//            printf("Error in binding\n");
+//            continue;
+//        }
+//        break;
+//    }
+
+
+
+
+//    char server_name[BUFFER_SIZE];
+//    gethostname(server_name,BUFFER_SIZE-1);
+//    printf("Server Address: <%s:",server_name);
+//    printf("%d>\n", ntohs(((struct sockaddr_in*)server_info)->sin_port));
+//    freeaddrinfo(server_info);
+//    if(tempinfo == NULL){
+//        printf("Could not bind...\n");
+//        return 1;
+//    }
 
     ///////////////////////////////////////////////////////////////////////////////////////////
 
@@ -91,7 +101,7 @@ int main(int argc, char* argv[]){
 
     char message[BUFFER_SIZE];
 
-    struct in_addr host_address_id;
+//    struct in_port_t host_address_id; //TODO: Undo if using host_address_id again
     int num_joined = 0;
     struct sockaddr *curr_sock_addr;
 
@@ -105,9 +115,9 @@ int main(int argc, char* argv[]){
             return(1);
         }
 
-        curr_sock_addr = (struct sockaddr*)&host_addr_storage[num_joined];
-        host_address_id = (((struct sockaddr_in*)curr_sock_addr)->sin_addr);
-        printf("Received packet from %s\n", inet_ntop(host_addr_storage[num_joined].ss_family, &host_address_id, host_address,sizeof(host_address)));
+//        curr_sock_addr = (struct sockaddr*)&host_addr_storage[num_joined];  //TODO: Undo if using host_address_id again
+//        host_address_id = (((struct sockaddr_in*)curr_sock_addr)->sin_port);
+//        printf("Received packet from %s\n", inet_ntop(host_addr_storage[num_joined].ss_family, &host_address_id, host_address,sizeof(host_address)));
 
         memset(message,0,BUFFER_SIZE-1);
         sprintf(message,"You are user number %d",num_joined);
@@ -122,7 +132,7 @@ int main(int argc, char* argv[]){
     int next_host;
     while(num_joined <  numHosts){
         next_host = (num_joined + 1) % numHosts;
-        sprintf(address_buffer, "%s", inet_ntop(host_addr_storage[next_host].ss_family, &host_address_id, host_address,sizeof(host_address)));
+//        sprintf(address_buffer, "%s", inet_ntop(host_addr_storage[next_host].ss_family, &host_address_id, host_address,sizeof(host_address))); //TODO: Undo if using host_address_id again
         printf("sending: %s",address_buffer);
         sendto(server_socket,address_buffer, sizeof(address_buffer),0,(struct sockaddr*)&host_addr_storage[num_joined], sizeof(struct sockaddr));
 
