@@ -36,6 +36,8 @@ int main(int argc, char* argv[]){
     struct addrinfo hints, *server_info, *tempinfo;    //Stores info about the address
     int num_bytes;                              //Number of bytes in a packet message
     struct sockaddr_in server_sockaddr;
+    struct sockaddr_in all_addr[numHosts];      //All addresses(using structs)      TODO: Use one of these.
+    char *all_addr_str[numHosts];               //All addresses(in string form)
     socklen_t sender_len;                       //Length to be obtained
     char host_address[INET6_ADDRSTRLEN];
 
@@ -47,6 +49,11 @@ int main(int argc, char* argv[]){
         printf("Could not establish socket.\n");
         return -1;
     }
+    if(bind(server_socket,(struct sockaddr*)&server_sockaddr,sizeof(server_sockaddr)) < 0){
+        printf("Error binding to the socket.\n");
+        return -1;
+    }
+
 
 
 
@@ -93,22 +100,42 @@ int main(int argc, char* argv[]){
     //define the address the message is coming from
     struct sockaddr_in sender_address;
 
-    struct sockaddr_storage host_addr_storage[numHosts];  //Stores the hosts addresses todo make sure this is correct
-    sender_len = sizeof(host_addr_storage);
+//    struct sockaddr_storage host_addr_storage[numHosts];  //Stores the hosts addresses todo make sure this is correct
+//    sender_len = sizeof(host_addr_storage);
 
 //    char host_name[BUFFER_SIZE];
 //    gethostname(host_name,BUFFER_SIZE - 1);
 
     char message[BUFFER_SIZE];
 
+    sender_len = sizeof(struct sockaddr_in);
+    num_bytes = (int)recvfrom(server_socket, message, BUFFER_SIZE,0,(struct sockaddr*)&all_addr[0],&sender_len);
+    if(num_bytes < 0){
+        printf("Could not get bytes.\n");
+    }
+
+    printf("Recieved: %s\n",message);
+
+    printf("Address: <%s:",inet_ntoa((all_addr[0].sin_addr)));
+    printf("%d>\n",htons(all_addr[0].sin_port));
+
+    char addr_msg[BUFFER_SIZE];
+    memset(addr_msg,0,BUFFER_SIZE-1);
+    sprintf(addr_msg,"%s:%d",inet_ntoa(all_addr[0].sin_addr),htons(all_addr[0].sin_port));
+
+    printf("Sending: %s\n", addr_msg);
+    sendto(server_socket, addr_msg, sizeof(addr_msg),0,(struct sockaddr*)&all_addr[0],sizeof(all_addr[0]));
+
+
+    /*
 //    struct in_port_t host_address_id; //TODO: Undo if using host_address_id again
     int num_joined = 0;
     struct sockaddr *curr_sock_addr;
 
     //Get the ip addresses of all of the hosts
     while(num_joined < numHosts){
-        num_bytes = (int)recvfrom(server_socket, buffer, BUFFER_SIZE, 0, (
-        struct sockaddr*)&host_addr_storage[num_joined], &sender_len);
+//        num_bytes = (int)recvfrom(server_socket, buffer, BUFFER_SIZE, 0, (
+//        struct sockaddr*)&host_addr_storage[num_joined], &sender_len);
         if(num_bytes < 0){
             printf("Error receiving bytes");
             close(server_socket);
@@ -121,7 +148,7 @@ int main(int argc, char* argv[]){
 
         memset(message,0,BUFFER_SIZE-1);
         sprintf(message,"You are user number %d",num_joined);
-        sendto(server_socket,message, sizeof(message),0,(struct sockaddr*)&host_addr_storage[num_joined], sizeof(struct sockaddr));
+//        sendto(server_socket,message, sizeof(message),0,(struct sockaddr*)&host_addr_storage[num_joined], sizeof(struct sockaddr));
 
         num_joined++;
     }
@@ -134,11 +161,13 @@ int main(int argc, char* argv[]){
         next_host = (num_joined + 1) % numHosts;
 //        sprintf(address_buffer, "%s", inet_ntop(host_addr_storage[next_host].ss_family, &host_address_id, host_address,sizeof(host_address))); //TODO: Undo if using host_address_id again
         printf("sending: %s",address_buffer);
-        sendto(server_socket,address_buffer, sizeof(address_buffer),0,(struct sockaddr*)&host_addr_storage[num_joined], sizeof(struct sockaddr));
+//        sendto(server_socket,address_buffer, sizeof(address_buffer),0,(struct sockaddr*)&host_addr_storage[num_joined], sizeof(struct sockaddr));
 
         num_joined++;
     }
 
+
+    */
 
     close(server_socket);
     return 0;

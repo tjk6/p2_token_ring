@@ -7,6 +7,7 @@
 #include <w32api/psdk_inc/_ip_types.h>
 #include <cygwin/in.h>
 #include <string.h>
+#include <unistd.h>
 #include "ring_client.h"
 
 #define BUFFER_SIZE 1024
@@ -33,6 +34,7 @@ int main(int argc, char *argv[]){
         printf("Error opening socket");
     }
     char buffer[BUFFER_SIZE];
+    memset(buffer,0,BUFFER_SIZE-1);
 
     //Change this to take in the address given by the parse
     struct sockaddr_in server_address;
@@ -42,10 +44,20 @@ int main(int argc, char *argv[]){
 
     struct hostent *hp;
 
+    strcpy(buffer,"Hello, World");
+    sendto(client_socket,buffer,sizeof(buffer),0,(struct sockaddr *)&server_address,sizeof(server_address));
+
+    char response[BUFFER_SIZE];
+    memset(response,0,BUFFER_SIZE-1);
+    int serveraddr_len = sizeof(struct sockaddr_in);
+    recvfrom(client_socket,response,sizeof(response),0,(struct sockaddr *)&server_address,&serveraddr_len);
+
+    printf("Received: %s\n", response);
+
 //    sendto(client_socket,"TOKEN", sizeof("TOKEN"),0, (
 //    struct server_address), );
 
-
+/*
     int msgNum = -1;
     char* selection;
     char selectChar = ' ';
@@ -82,4 +94,8 @@ int main(int argc, char *argv[]){
         }
 
     }
+    */
+
+    close(client_socket);
+    return(0);
 }
