@@ -73,8 +73,8 @@
 					<DistClean command="/usr/bin/make.exe -j16 -f &quot;/cygdrive/d/UWF\ Spring\ 2018/SysNetII/p2_token_ring/p2_token_ring/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
-			<Target title="p2_token_ring">
-				<Option output="/cygdrive/d/UWF Spring 2018/SysNetII/p2_token_ring/p2_token_ring/cmake-build-debug/p2_token_ring.exe" prefix_auto="0" extension_auto="0"/>
+			<Target title="bbserver">
+				<Option output="/cygdrive/d/UWF Spring 2018/SysNetII/p2_token_ring/p2_token_ring/cmake-build-debug/bbserver.exe" prefix_auto="0" extension_auto="0"/>
 				<Option working_dir="/cygdrive/d/UWF Spring 2018/SysNetII/p2_token_ring/p2_token_ring/cmake-build-debug"/>
 				<Option object_output="./"/>
 				<Option type="1"/>
@@ -85,14 +85,14 @@
 					<Add directory="/usr/lib/gcc/x86_64-pc-cygwin/6.4.0/../../../../lib/../include/w32api"/>
 				</Compiler>
 				<MakeCommands>
-					<Build command="/usr/bin/make.exe -j16 -f &quot;/cygdrive/d/UWF\ Spring\ 2018/SysNetII/p2_token_ring/p2_token_ring/cmake-build-debug/Makefile&quot;  VERBOSE=1 p2_token_ring"/>
+					<Build command="/usr/bin/make.exe -j16 -f &quot;/cygdrive/d/UWF\ Spring\ 2018/SysNetII/p2_token_ring/p2_token_ring/cmake-build-debug/Makefile&quot;  VERBOSE=1 bbserver"/>
 					<CompileFile command="/usr/bin/make.exe -j16 -f &quot;/cygdrive/d/UWF\ Spring\ 2018/SysNetII/p2_token_ring/p2_token_ring/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
 					<Clean command="/usr/bin/make.exe -j16 -f &quot;/cygdrive/d/UWF\ Spring\ 2018/SysNetII/p2_token_ring/p2_token_ring/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
 					<DistClean command="/usr/bin/make.exe -j16 -f &quot;/cygdrive/d/UWF\ Spring\ 2018/SysNetII/p2_token_ring/p2_token_ring/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
-			<Target title="p2_token_ring/fast">
-				<Option output="/cygdrive/d/UWF Spring 2018/SysNetII/p2_token_ring/p2_token_ring/cmake-build-debug/p2_token_ring.exe" prefix_auto="0" extension_auto="0"/>
+			<Target title="bbserver/fast">
+				<Option output="/cygdrive/d/UWF Spring 2018/SysNetII/p2_token_ring/p2_token_ring/cmake-build-debug/bbserver.exe" prefix_auto="0" extension_auto="0"/>
 				<Option working_dir="/cygdrive/d/UWF Spring 2018/SysNetII/p2_token_ring/p2_token_ring/cmake-build-debug"/>
 				<Option object_output="./"/>
 				<Option type="1"/>
@@ -103,7 +103,7 @@
 					<Add directory="/usr/lib/gcc/x86_64-pc-cygwin/6.4.0/../../../../lib/../include/w32api"/>
 				</Compiler>
 				<MakeCommands>
-					<Build command="/usr/bin/make.exe -j16 -f &quot;/cygdrive/d/UWF\ Spring\ 2018/SysNetII/p2_token_ring/p2_token_ring/cmake-build-debug/Makefile&quot;  VERBOSE=1 p2_token_ring/fast"/>
+					<Build command="/usr/bin/make.exe -j16 -f &quot;/cygdrive/d/UWF\ Spring\ 2018/SysNetII/p2_token_ring/p2_token_ring/cmake-build-debug/Makefile&quot;  VERBOSE=1 bbserver/fast"/>
 					<CompileFile command="/usr/bin/make.exe -j16 -f &quot;/cygdrive/d/UWF\ Spring\ 2018/SysNetII/p2_token_ring/p2_token_ring/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
 					<Clean command="/usr/bin/make.exe -j16 -f &quot;/cygdrive/d/UWF\ Spring\ 2018/SysNetII/p2_token_ring/p2_token_ring/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
 					<DistClean command="/usr/bin/make.exe -j16 -f &quot;/cygdrive/d/UWF\ Spring\ 2018/SysNetII/p2_token_ring/p2_token_ring/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
@@ -117,10 +117,10 @@
 			<Option target="bbhost"/>
 		</Unit>
 		<Unit filename="/cygdrive/d/UWF Spring 2018/SysNetII/p2_token_ring/p2_token_ring/server.c">
-			<Option target="p2_token_ring"/>
+			<Option target="bbserver"/>
 		</Unit>
 		<Unit filename="/cygdrive/d/UWF Spring 2018/SysNetII/p2_token_ring/p2_token_ring/server.h">
-			<Option target="p2_token_ring"/>
+			<Option target="bbserver"/>
 		</Unit>
 		<Unit filename="/cygdrive/d/UWF Spring 2018/SysNetII/p2_token_ring/p2_token_ring/CMakeLists.txt">
 			<Option virtualFolder="CMake Files\"/>

@@ -44,5 +44,5 @@ set(CMAKE_MAKEFILE_PRODUCTS
 # Dependency information for all targets:
 set(CMAKE_DEPEND_INFO_FILES
   "CMakeFiles/bbhost.dir/DependInfo.cmake"
-  "CMakeFiles/p2_token_ring.dir/DependInfo.cmake"
+  "CMakeFiles/bbserver.dir/DependInfo.cmake"
   )

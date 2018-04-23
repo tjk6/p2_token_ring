@@ -124,17 +124,17 @@ bbhost/fast:
 .PHONY : bbhost/fast
 
 #=============================================================================
-# Target rules for targets named p2_token_ring
+# Target rules for targets named bbserver
 
 # Build rule for target.
-p2_token_ring: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 p2_token_ring
-.PHONY : p2_token_ring
+bbserver: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 bbserver
+.PHONY : bbserver
 
 # fast build rule for target.
-p2_token_ring/fast:
-	$(MAKE) -f CMakeFiles/p2_token_ring.dir/build.make CMakeFiles/p2_token_ring.dir/build
-.PHONY : p2_token_ring/fast
+bbserver/fast:
+	$(MAKE) -f CMakeFiles/bbserver.dir/build.make CMakeFiles/bbserver.dir/build
+.PHONY : bbserver/fast
 
 ring_client.o: ring_client.c.o
 
@@ -169,7 +169,7 @@ server.o: server.c.o
 
 # target to build an object file
 server.c.o:
-	$(MAKE) -f CMakeFiles/p2_token_ring.dir/build.make CMakeFiles/p2_token_ring.dir/server.c.o
+	$(MAKE) -f CMakeFiles/bbserver.dir/build.make CMakeFiles/bbserver.dir/server.c.o
 .PHONY : server.c.o
 
 server.i: server.c.i
@@ -178,7 +178,7 @@ server.i: server.c.i
 
 # target to preprocess a source file
 server.c.i:
-	$(MAKE) -f CMakeFiles/p2_token_ring.dir/build.make CMakeFiles/p2_token_ring.dir/server.c.i
+	$(MAKE) -f CMakeFiles/bbserver.dir/build.make CMakeFiles/bbserver.dir/server.c.i
 .PHONY : server.c.i
 
 server.s: server.c.s
@@ -187,7 +187,7 @@ server.s: server.c.s
 
 # target to generate assembly for a file
 server.c.s:
-	$(MAKE) -f CMakeFiles/p2_token_ring.dir/build.make CMakeFiles/p2_token_ring.dir/server.c.s
+	$(MAKE) -f CMakeFiles/bbserver.dir/build.make CMakeFiles/bbserver.dir/server.c.s
 .PHONY : server.c.s
 
 # Help Target
@@ -199,7 +199,7 @@ help:
 	@echo "... rebuild_cache"
 	@echo "... edit_cache"
 	@echo "... bbhost"
-	@echo "... p2_token_ring"
+	@echo "... bbserver"
 	@echo "... ring_client.o"
 	@echo "... ring_client.i"
 	@echo "... ring_client.s"

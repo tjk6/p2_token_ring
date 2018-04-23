@@ -1,0 +1,30 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/cygdrive/d/UWF Spring 2018/SysNetII/p2_token_ring/p2_token_ring/ring_client.c
+stdio.h
+-
+stdlib.h
+-
+sys/socket.h
+-
+cygwin/in.h
+-
+string.h
+-
+unistd.h
+-
+arpa/inet.h
+-
+pthread.h
+-
+ring_client.h
+/cygdrive/d/UWF Spring 2018/SysNetII/p2_token_ring/p2_token_ring/ring_client.h
+
+/cygdrive/d/UWF Spring 2018/SysNetII/p2_token_ring/p2_token_ring/ring_client.h
+
