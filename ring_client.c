@@ -18,8 +18,9 @@
 
 int create_sock();
 void init_addr(struct sockaddr_in *, char *, uint16_t);
-int get_next_addr(int, struct sockaddr_in *, struct sockaddr_in *);
+int countlines(FILE*);
 void* menu_func(void*);
+void print_msg_at_loc(FILE*, int);
 
 int token, is_done;
 
@@ -46,7 +47,7 @@ int main(int argc, char *argv[]){
     memset(filename,0,sizeof(filename));
     strcpy(filename,argv[4]);
     int this_socket, server_socket;
-    struct sockaddr_in this_addr, server_address, neighbor_addr;
+    struct sockaddr_in this_addr, server_address, neighbor_addr, new_addr;
     int serveraddr_len = sizeof(struct sockaddr_in);
     pthread_t menu_thread;
 
@@ -70,7 +71,9 @@ int main(int argc, char *argv[]){
     //Get the response from the server and close the socket
     char response[BUFFER_SIZE];
     memset(response,0,BUFFER_SIZE-1);
+    printf("Waiting...\n");
     recvfrom(server_socket,response,sizeof(response),0,(struct sockaddr *)&server_address,&serveraddr_len);
+    printf("Received\n");
     close(server_socket);
 
     //Parse the address that the neighbor will be using and initialize the address
@@ -107,33 +110,64 @@ int main(int argc, char *argv[]){
     while(1){
         sleep(1);
         memset(this_msg,0,sizeof(this_msg));
+        sprintf(this_msg,"0:0");
         if((int)htons(neighbor_addr.sin_port) == (int)htons(this_addr.sin_port)){
-            printf("Break!\n");
+            printf("You're the last host. Select e to exit.\n");
             break;
         }
         if(token == 1){
             //Send the token to the next client
             if(is_done == 1){
                 sprintf(this_msg,"%d:%d",host_port,htons(neighbor_addr.sin_port));
+                printf("Sending %s to %d\n",this_msg,htons(neighbor_addr.sin_port));
                 sendto(this_socket,this_msg,sizeof(this_msg),0,(struct sockaddr *)&neighbor_addr,sizeof(neighbor_addr));
                 break;
             }
             else{
                 sprintf(this_msg,"0:0");
+                printf("Sending %s to %d\n",this_msg,htons(neighbor_addr.sin_port));
                 sendto(this_socket,neighbor_msg,sizeof(neighbor_msg),0,(struct sockaddr *)&neighbor_addr,sizeof(neighbor_addr));
             }
             token = 0;
         }
         else{
             //Wait to receive the token. When message is received, token becomes 1
-            memset(neighbor_msg,0,sizeof(neighbor_msg));
+//            memset(neighbor_msg,0,sizeof(neighbor_msg));
             recvfrom(this_socket,neighbor_msg,sizeof(neighbor_msg),0,NULL,&serveraddr_len);
-            int portno = (int)strtol(strtok(neighbor_msg,":"),NULL,10);
-            int next_port = (int)strtol(strtok(NULL,"\0"),NULL,10);
+            printf("Received:%s\n",neighbor_msg);
+
+
+            int portno = -1;
+            char* portno_ptr = strtok(neighbor_msg,":");
+            if(portno_ptr != NULL){
+                portno = (int)strtol(portno_ptr,NULL,10);
+                printf("portno_ptr is %d\n",portno);
+            }
+            int next_port = -1;
+            char* next_port_ptr = strtok(NULL,"\0");
+            if(next_port_ptr != NULL){
+                next_port = (int)strtol(next_port_ptr,NULL,10);
+                printf("next_port_ptr is %d\n",next_port);
+            }
+//            printf("Got past the assignment\n");
+//            printf("%d:%d\n",portno,next_port);
+//            if(next_port == -1){
+//                printf("Received port: %d\n",portno);
+//                memset(this_msg,0,sizeof(this_msg));
+//                sprintf(this_msg,"%s:%d:0","127.0.0.1",(int)htons(this_addr.sin_port));
+//                printf("Message to new peer: %s\n",this_msg);
+//                printf("Sending to: %d\n",(int)htons(new_addr.sin_port));
+//                sendto(this_socket,this_msg,sizeof(this_msg),0,(struct sockaddr *)&new_addr,sizeof(new_addr));
+//                next_port = portno;
+//                portno = host_port;
+//            }
+
+            printf("%d comparting to %d\n",(int)htons(neighbor_addr.sin_port),portno);
             if((int)htons(neighbor_addr.sin_port) == portno ){
+                printf("match!\n");
                 neighbor_addr.sin_port = htons((uint16_t)next_port);
-                portno = 0;
-                next_port = 0;
+//                portno = 0;
+//                next_port = 0;
             }
             sprintf(neighbor_msg,"%d:%d",portno,next_port);
             token = 1;
@@ -163,7 +197,6 @@ void init_addr(struct sockaddr_in *addr_struct, char *ip_addr, uint16_t port_num
 }
 
 void* menu_func(void* filename_ptr){
-    printf("Made it to the function at least...\n");
     char *filename = (char*)filename_ptr;
     printf("Filename: %s\n",filename);
     FILE *fp = fopen(filename,"a+");
@@ -173,32 +206,41 @@ void* menu_func(void* filename_ptr){
     int msgNum = -1;
     char selection[BUFFER_SIZE];
     char selectChar = ' ';
+    char input_msg[LRG_BUFFER_SIZE];
     char message[LRG_BUFFER_SIZE];
     while(1){
         printf("Enter your selection. For help, type h\n");
-        scanf("%s",selection);
-        printf("Your selection: %s\n",selection);
+        scanf(" %[^\n]",selection);
+        printf("Your selection: %s\n",strtok(selection," \n"));
 
         selectChar = selection[0];
 
         switch(selectChar){
             case 'w':
-                //Write the message
+                //Write the message TODO: PUT INTO A FUNCTION LATER
                 printf("Enter your message\n");
-                if(token == 1){
-                    sprintf(message,"<message n=%d>",msgNum);
-                    fgets(message, LRG_BUFFER_SIZE, stdin);
-                    scanf("%s",message);
-                    sprintf(message,"</message>");
-                    printf("Your message: %s",message);
-                    fputs(message, fp);
-                }
+                fflush(stdin);
+                scanf(" %[^\n]",input_msg);
+                while(token == 0); //Wait for the token to be 1
+                fprintf(fp,"<message n=%d>%s</message>\r\n",countlines(fp) + 1,input_msg);
+                fflush(fp);
                 break;
             case 'r':
-                msgNum = selection[2];
+                while(token == 0);
+                char* num_str;
+                if((num_str = strtok(NULL," \n")) != NULL){
+                    msgNum = (int)strtol(num_str,NULL,10); //TODO: Change to a tokenized string
+                    printf("Getting message number %d\n",msgNum);
+                    print_msg_at_loc(fp, msgNum);
+                }
+                else{
+                    printf("No value given for read. Use r <number> where <number> is the specific line you want to read.\n");
+                }
                 //Get the message
                 break;
             case 'l':
+                while(token == 0);
+                printf("Messages in range: 0-%d\n",countlines(fp));
                 //Get the number of the most recent message and print it as the range.
                 break;
             case 'e':
@@ -221,3 +263,29 @@ void* menu_func(void* filename_ptr){
 
 }
 #pragma clang diagnostic pop
+
+int countlines(FILE* fp){
+    int ch;
+    int msg_num = 0;
+    rewind(fp);
+    for(ch = getc(fp); ch != EOF; ch = getc(fp)){
+        if(ch == '\n'){
+            msg_num++;
+        }
+    }
+    return msg_num;
+}
+
+void print_msg_at_loc(FILE* fp, int messageno){
+    int line_num = 1;
+    char message[LRG_BUFFER_SIZE];
+    rewind(fp);
+
+    while(fgets(message, sizeof(message), fp) != NULL){
+        if(line_num == messageno){
+            printf("%s\n", message);
+            return;
+        }
+        line_num++;
+    }
+}
